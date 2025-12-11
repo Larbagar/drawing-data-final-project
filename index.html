@@ -11,11 +11,12 @@
 
     <div class = "description">
         <p>
-            There's a ton of information accessible through the office of the registrar page.
-            This page is an attempt at synthesizing some of the Fall 2025 data.
+            Princeton’s Office of the Registrar contains a large amount of publicly accessible information.
+            This page is an attempt at synthesizing some of the data on the Fall 2025 semester.
         </p>
         <p>
-            All the data in this set was collected through a Python script using the princeton MobileApp API (<a href = "https://tigerapps.org/resources/">more information</a>).
+            All data was collected using a Python script querying the Princeton MobileApp API
+            (<a href = "https://tigerapps.org/resources/">more information</a>).
         </p>
     </div>
 
@@ -23,23 +24,23 @@
 
     <div class = "description">
         <p>
-            This graph shows information about courses throughout the course of the day.
+            This visualization shows how courses are distributed throughout the day.
         </p>
         <p>
-            The exact value plotted can be varied:
+            You can choose which value to plot:
         </p>
         <ul>
-            <li>Course Count: The number of courses one could potentially take.</li>
-            <li>Enrollment: The number of students (supposed to be) in class.</li>
-            <li>Capacity: How many students could be in class.</li>
+            <li>Course Count: The number of courses offered at a given time.</li>
+            <li>Enrollment: The number of students expected to be in class.</li>
+            <li>Capacity: The maximum number of students that could be in class.</li>
         </ul>
         <p>
-            Certain departments can be selected to see information about only classes offered by that department.
-            Note that this refers to courses offered primarily by the department and doesn't include cross-listed courses.
+            You can also filter by department.
+            This excludes cross-listed courses listed as belonging to another department.
         </p>
         <p>
-            The "normalize outputs" option will stretch subjects' graphs so that they are all the same height.
-            This may help with comparing the time people take classes in a department.
+            The "normalize outputs" option will scale each department's graph so that they are all the same height.
+            This may make cross-department timing comparisons easier.
         </p>
     </div>
 
@@ -72,7 +73,6 @@
         <p>
             This is the distribution of the course numbers chosen for classes.
             The gap at the end is the jump from 500 level courses to 1000 level courses.
-            Currently unfinished--Sorry there's no labels.
         </p>
     </div>
 
@@ -83,12 +83,19 @@
 
     <div class = "description">
         <p>
-            This table shows some data about each of the departments offering classes.
-            Clicking headers will change sorting.
+            This table summarizes several statistics about each department's course offerings.
+            Click any column header to sort by that field.
         </p>
         <p>
-            Cumulative class time refers to the total time students spend in class.
-            This can be thought of as the area under the enrollment curve in the previous graph.
+            <strong>Total Instruction Time</strong> refers to the total time spent by instructors teaching each week.
+        </p>
+        <p>
+            <strong>Cumulative Class Time</strong> refers to the total time students spend in class.
+            Conceptually, this value can be thought of as being the hours of instruction weighted by enrollment.
+        </p>
+        <p>
+            <strong>Efficiency</strong> is the Cumulative Class Time / Instruction Time, which represents how many times the content is being duplicated by being listened to multiple people.
+            This is similar to the average student count per section, but it isn't particularly beneficial to think about it that way.
         </p>
     </div>
 
@@ -98,12 +105,16 @@
                 <col>
                 <col>
                 <col>
+                <col>
+                <col>
             </colgroup>
             <thead>
                 <tr>
-                    <th>Subject</th>
+                    <th id = "course-name-header" class = "clickable-header">Subject</th>
+                    <th id = "course-count-header" class = "clickable-header">Courses Offered</th>
+                    <th id = "instruction-hours-header" class = "clickable-header">Total Instruction Time (days / week)</th>
                     <th id = "cum-time-header" class = "clickable-header">Cumulative Class Time (days / week)</th>
-                    <th id = "course-count-header" class = "clickable-header">Courses offered</th>
+                    <th id = "efficiency" class = "clickable-header">Efficiency</th>
                 </tr>
             </thead>
             <tbody id ="subject-table-body">

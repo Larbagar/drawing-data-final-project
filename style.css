@@ -24,7 +24,8 @@ body {
 }
 
 #big-graph {
-    width: 100%;
+    min-width: 0;
+    flex: 1 1 0;
     height: 100%;
 }
 
@@ -38,7 +39,7 @@ body {
 }
 
 #temporal-graph-controls {
-    width: 400px;
+    flex: 0 0 400px;
     overflow: scroll;
     display: flex;
     flex-direction: column;
@@ -55,10 +56,16 @@ body {
     width: 400px;
 }
 #subject-table-columns col:nth-child(2) {
-    width: 200px;
+    width: 160px;
 }
 #subject-table-columns col:nth-child(3) {
-    width: 200px;
+    width: 160px;
+}
+#subject-table-columns col:nth-child(4) {
+    width: 160px;
+}
+#subject-table-columns col:nth-child(5) {
+    width: 160px;
 }
 
 #subject-table-body td {

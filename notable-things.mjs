@@ -8,6 +8,7 @@ function setUpNotableThings() {
     const rows = []
     for (const subject of dataset) {
         let subjectEnrollment = 0
+        let subjectInstructionTime = 0
         for (const course of subject.courses) {
             for (const section of course.classes) {
                 const
@@ -30,17 +31,27 @@ function setUpNotableThings() {
                         //                 0
                         // )
                     subjectEnrollment += days * enrollment * (endTime - startTime)
+                    subjectInstructionTime += days * (endTime - startTime)
                 }
             }
         }
-        rows.push([subject.name, subjectEnrollment, subject.courses.length])
+        rows.push([subject.name, subject.courses.length, subjectInstructionTime, subjectEnrollment, subjectEnrollment / subjectInstructionTime])
     }
-    const totEnrollment = rows.reduce((sum, data) => sum + data[1], 0)
-    const totCount = rows.reduce((sum, data) => sum + data[2], 0)
-    rows.push(["Total", totEnrollment, totCount])
+    const totCount = rows.reduce((sum, data) => sum + data[1], 0)
+    const totInstructionTime = rows.reduce((sum, data) => sum + data[2], 0)
+    const totEnrollment = rows.reduce((sum, data) => sum + data[3], 0)
+    rows.push(["Total", totEnrollment, totInstructionTime, totEnrollment, totEnrollment / totInstructionTime])
 
     function sortBy(n){
-        rows.sort((a, b) => b[n] - a[n])
+
+        rows.sort((a, b) => {
+            if(typeof a[n] == "string"){
+                return b[n] < a[n] ? -1 : 1
+            }
+            if(typeof a[n] == "number"){
+                return b[n] - a[n]
+            }
+        })
 
         const subjectTable = document.getElementById("subject-table-body")
 
@@ -50,15 +61,22 @@ function setUpNotableThings() {
 
         for(const row of rows) {
             const tr = document.createElement("tr")
-            for(const datum of row){
+            for(let i = 0; i < row.length; i++){
+                const datum = row[i]
+
                 const td = document.createElement("td")
                 let text
-                if(typeof datum == "number"){
-                    text = document.createTextNode(datum.toFixed(2))
+                if(i === 0){
+                    text = datum
+                }else if(i === 1){
+                    text = datum.toFixed(0)
                 }else{
-                    text = document.createTextNode(datum)
+                    text = datum.toFixed(2)
+                    if(isNaN(datum)){
+                        text = ""
+                    }
                 }
-                td.append(text)
+                td.append(document.createTextNode(text))
 
                 tr.append(td)
             }
@@ -67,14 +85,27 @@ function setUpNotableThings() {
         }
     }
 
-    sortBy(1)
+    sortBy(3)
+
+    document.getElementById("instruction-hours-header").onclick = () => {
+        sortBy(2)
+    }
 
     document.getElementById("cum-time-header").onclick = () => {
-        sortBy(1)
+        sortBy(3)
+    }
+
+
+    document.getElementById("efficiency").onclick = () => {
+        sortBy(4)
     }
 
     document.getElementById("course-count-header").onclick = () => {
-        sortBy(2)
+        sortBy(1)
+    }
+
+    document.getElementById("course-name-header").onclick = () => {
+        sortBy(0)
     }
 
 
