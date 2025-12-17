@@ -16,6 +16,7 @@ const dataTypes = {
     count: "count",
     enrollment: "enrollment",
     capacity: "capacity",
+
 }
 
 /**

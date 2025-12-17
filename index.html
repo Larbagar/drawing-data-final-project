@@ -7,134 +7,188 @@
     <link rel="stylesheet" href = "style.css">
 </head>
 <body>
-    <h1 id = "title">Course Curiosities at Princeton</h1>
+    <header>
 
-    <div class = "description">
-        <p>
-            Princeton’s Office of the Registrar contains a large amount of publicly accessible information.
-            This page is an attempt at synthesizing some of the data on the Fall 2025 semester.
-        </p>
-        <p>
-            All data was collected using a Python script querying the Princeton MobileApp API
-            (<a href = "https://tigerapps.org/resources/">more information</a>).
-        </p>
-    </div>
+        <h1 id = "title">Course Curiosities at Princeton</h1>
 
-    <h2 class = "heading">When Courses are Taken</h2>
-
-    <div class = "description">
-        <p>
-            This visualization shows how courses are distributed throughout the day.
-        </p>
-        <p>
-            You can choose which value to plot:
-        </p>
-        <ul>
-            <li>Course Count: The number of courses offered at a given time.</li>
-            <li>Enrollment: The number of students expected to be in class.</li>
-            <li>Capacity: The maximum number of students that could be in class.</li>
-        </ul>
-        <p>
-            You can also filter by department.
-            This excludes cross-listed courses listed as belonging to another department.
-        </p>
-        <p>
-            The "normalize outputs" option will scale each department's graph so that they are all the same height.
-            This may make cross-department timing comparisons easier.
-        </p>
-    </div>
-
-    <div id = "temporal-graph-container">
-        <div id = "temporal-graph-controls">
-            <label for="graphed-value">Graphed Value</label>
-            <select id="graphed-value">
-                <option value="course count">Course Count</option>
-                <option value="enrollment" selected>Enrollment</option>
-                <option value="capacity">Capacity</option>
-            </select>
-
-            <br>
-
-            <label><input type="checkbox" id="normalize">Normalize Outputs</label>
-
-            <br>
-
-            <fieldset id = "subject-list-fieldset">
-                <legend>Subjects</legend>
-                <ul id = "subject-list"><!-- Inserted via js --></ul>
-            </fieldset>
+        <div class = "description">
+            <p>
+                Princeton’s Office of the Registrar contains a large amount of publicly accessible information.
+                This page is an attempt at synthesizing some of the data from the Fall 2025 semester.
+            </p>
+            <p>
+                All data was collected using a Python script querying the Princeton MobileApp API
+                (<a href = "https://tigerapps.org/resources/">more information</a>).
+            </p>
         </div>
-        <canvas id = "big-graph"></canvas>
-    </div>
 
-    <h2 class = "heading">Course Number Distributions</h2>
+    </header>
 
-    <div class = "description">
-        <p>
-            This is the distribution of the course numbers chosen for classes.
-            The gap at the end is the jump from 500 level courses to 1000 level courses.
-        </p>
-    </div>
+    <hr>
 
-    <canvas id = "course-number-distribution-graph"></canvas>
+    <main>
 
+        <section>
 
-    <h2 class = "heading">Department Comparisons</h2>
+            <h2 class = "heading">When Courses are Taken</h2>
 
-    <div class = "description">
-        <p>
-            This table summarizes several statistics about each department's course offerings.
-            Click any column header to sort by that field.
-        </p>
-        <p>
-            <strong>Total Instruction Time</strong> refers to the total time spent by instructors teaching each week.
-        </p>
-        <p>
-            <strong>Cumulative Class Time</strong> refers to the total time students spend in class.
-            Conceptually, this value can be thought of as being the hours of instruction weighted by enrollment.
-        </p>
-        <p>
-            <strong>Efficiency</strong> is the Cumulative Class Time / Instruction Time, which represents how many times the content is being duplicated by being listened to multiple people.
-            This is similar to the average student count per section, but it isn't particularly beneficial to think about it that way.
-        </p>
-    </div>
+            <div class = "description">
+                <p>
+                    This visualization shows how courses are distributed throughout the day.
+                </p>
+                <p>
+                    You can choose which value to plot:
+                </p>
+                <ul>
+                    <li><dfn>Course Count</dfn>: The number of courses offered at a given time.</li>
+                    <li><dfn>Enrollment</dfn>: The number of students expected to be in class.</li>
+                    <li><dfn>Capacity</dfn>: The maximum number of students that could be in class.</li>
+                </ul>
+                <p>
+                    You can also filter by department.
+                    This excludes cross-listed courses listed as belonging to another department.
+                </p>
+                <p>
+                    The "normalize outputs" option will scale each department's graph so that they are all the same height.
+                    This may make cross-department timing comparisons easier.
+                </p>
+            </div>
 
-    <div>
-        <table id = "subject-table">
-            <colgroup id = "subject-table-columns">
-                <col>
-                <col>
-                <col>
-                <col>
-                <col>
-            </colgroup>
-            <thead>
-                <tr>
-                    <th id = "course-name-header" class = "clickable-header">Subject</th>
-                    <th id = "course-count-header" class = "clickable-header">Courses Offered</th>
-                    <th id = "instruction-hours-header" class = "clickable-header">Total Instruction Time (days / week)</th>
-                    <th id = "cum-time-header" class = "clickable-header">Cumulative Class Time (days / week)</th>
-                    <th id = "efficiency" class = "clickable-header">Efficiency</th>
-                </tr>
-            </thead>
-            <tbody id ="subject-table-body">
+            <div id = "temporal-graph-container">
+                <div id = "temporal-graph-controls">
+                    <label for="graphed-value">Graphed Value</label>
+                    <select id="graphed-value">
+                        <option value="course count">Course Count</option>
+                        <option value="enrollment" selected>Enrollment</option>
+                        <option value="capacity">Capacity</option>
+                        <option value="enrollment/capacity">Relative Enrollment</option>
+                    </select>
 
-            </tbody>
-        </table>
-    </div>
+                    <br>
 
-<!--    <div id = "badge-grid">-->
-<!--        <div class = "badge">-->
-<!--            <div class = "badge-caption">Department with the Greatest Cumulative Student Class Time</div>-->
-<!--            <div class = "badge-value" id = "department-most-class-time">Value 1</div>-->
-<!--        </div>-->
-<!--        <div class = "badge">-->
-<!--            <div class = "badge-caption">Department with the Least Cumulative Student Class Time</div>-->
-<!--            <div class = "badge-value" id = "department-least-class-time">Value 2</div>-->
-<!--        </div>-->
-<!--    </div>-->
+                    <label><input type="checkbox" id="normalize">Normalize Outputs</label>
 
-<!--    Near Eastern Studies is wierd, especially when compared to Global health and health policy-->
+                    <br>
+
+                    <fieldset id = "subject-list-fieldset">
+                        <legend>Subjects</legend>
+                        <ul id = "subject-list"><!-- Inserted via js --></ul>
+                    </fieldset>
+                </div>
+                <canvas id = "big-graph"></canvas>
+            </div>
+            <div class = "description">
+                <p>
+                    Departments that have labs, such as chemistry or physics, tend to account for more enrollment late in the day compared to other departments.
+                    Language departments, on the other hand, offer significantly more classes during lunchtime, with Spanish and French contributing a significant portion during that time.
+                    There is a large gap from 4:30 to 7:30 where very few courses are in session.
+                    Architecture is a notable exception, offering half the courses available from 4:30 to 6:00.
+                    This stems from the fact that it offers many 500-level studio classes that run from 1:30 to 5:50.
+                </p>
+            </div>
+
+        </section>
+
+        <hr>
+
+        <section>
+
+            <h2 class = "heading">Department Comparisons</h2>
+
+            <div class = "description">
+                <p>
+                    This table summarizes several statistics about each department's course offerings.
+                    Click any column header to sort by that field.
+                </p>
+                <p>
+                    <dfn>Total Instruction Time</dfn> refers to the total time classes are in session.
+                    If two classes are both being taught at the same time, both will contribute to the total.
+                    This is a measure of how large the "Course Count" graph above is.
+                </p>
+                <p>
+                    <dfn>Collective Student Class Time</dfn> refers to the sum of the time students spend in class.
+                    Conceptually, this value can be thought of as being the hours of instruction weighted by enrollment.
+                    For example, if 12 students are taught for 3 hours, the collective class time would be 36.
+                    This is a measure of how large the "Enrollment" graph above is.
+                </p>
+                <p>
+                    <dfn>Efficiency</dfn> is the Collective Class Time / Instruction Time, which reflects how many students, on average, are receiving instruction per hour of class.
+                    This captures that each hour of class for a 12 person class is going to result in 12 hours of learning across all students.
+                    This is a measure of how personalized the content is.
+                </p>
+                <p>
+                    <dfn>Average Time</dfn> represents the duration-weighted average time at which courses take place.
+                </p>
+            </div>
+
+            <div id = "subject-table-container">
+                <table id = "subject-table">
+                    <colgroup id = "subject-table-columns">
+                        <col>
+                        <col>
+                        <col>
+                        <col>
+                        <col>
+                        <col>
+                    </colgroup>
+                    <thead id = "subject-table-head">
+                        <tr>
+                            <th id = "course-name-header" class = "clickable-header">Subject</th>
+                            <th id = "course-count-header" class = "clickable-header">Courses Offered</th>
+                            <th id = "instruction-hours-header" class = "clickable-header">Total Instruction Time (days / week)</th>
+                            <th id = "cum-time-header" class = "clickable-header">Collective Student Class Time (days / week)</th>
+                            <th id = "efficiency-header" class = "clickable-header">Efficiency</th>
+                            <th id = "avg-time-header" class = "clickable-header">Average Time</th>
+                        </tr>
+                    </thead>
+                    <tbody id ="subject-table-body">
+
+                    </tbody>
+                </table>
+            </div>
+
+            <div class = "description">
+                <p>
+                    An interesting comparison is between Near Eastern Studies and Global Health & Health Policy.
+                    Despite them both having around 9.8 days of collective student class time, Near Eastern Studies achieved it over 21 courses, while Global Health & Health Policy was able to in just one.
+                </p>
+                <p>
+                    A strong correlation I found in this data is that departments offering more courses tended to have less variability in the average time courses are offered.
+                </p>
+            </div>
+
+        </section>
+
+        <hr>
+
+        <section>
+
+            <h2 class = "heading">Course Number Distributions</h2>
+
+            <div class = "description">
+                <p>
+                    This is the distribution of the course numbers chosen for classes.
+                    The gap at the end is the jump from 500- to 1000-level courses.
+                </p>
+            </div>
+
+            <canvas id = "course-number-distribution-graph"></canvas>
+
+            <div class = "description">
+                <p>
+                    The most frequent course number was 498, appearing 38 times. This generally corresponds to the class Senior Thesis I, except in the cases of ART (Senior Thesis Development), ECO and GEO (Senior Thesis Foundation), ORF (Senior Independent Research Foundations), and PHY (Senior Thesis Planning).
+                </p>
+                <p>
+                    The next most used numbers are 101 (30 instances), 105 (26), 501 (22), and then 301 (18).
+                </p>
+                <p>
+                    The 1000-level courses correspond to the Introductory [Language] II (1002) courses offered by the Chinese, Japanese, and Korean departments.
+                </p>
+            </div>
+
+        </section>
+
+    </main>
 
 
     <script type="module" src = "main.mjs"></script>

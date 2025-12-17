@@ -123,7 +123,7 @@ function setupDayGraph() {
     resize()
 
     const
-        dataMap = generateDataMap(f2025, dataTypes.enrollment),
+        dataMap = new Map(),
         fullDetailKeys = generateSortedKeys(dataMap)
 
 // graph = new Graph(dataMap, null, getMaxValue(dataMap, sortedKeys), fullDetailKeys)
@@ -144,10 +144,32 @@ function setupDayGraph() {
         }
     }
 
+    function *zip (...iterables){
+        let iterators = iterables.map(i => i[Symbol.iterator]() )
+        while (true) {
+            let results = iterators.map(iter => iter.next() )
+            if (results.some(res => res.done) ) return
+            else yield results.map(res => res.value )
+        }
+    }
+
     function updateGraphedValue() {
         for (const [subject, graph] of graphs) {
             graph.resetAnimation()
-            graph.dataMap = generateDataMap(f2025, valueToGraph(), graph.subjects)
+            if(graphedValueSelect.value === "enrollment/capacity"){
+                const
+                    enrollmentDataMap = generateDataMap(f2025, dataTypes.enrollment, graph.subjects),
+                    capacityDataMap = generateDataMap(f2025, dataTypes.capacity, graph.subjects),
+                    relativeCapacityDataMap = new Map()
+                for(const key of graph.sortedKeys){
+                    relativeCapacityDataMap.set(key,
+                        enrollmentDataMap.get(key) / capacityDataMap.get(key)
+                    )
+                }
+                graph.dataMap = relativeCapacityDataMap
+            }else {
+                graph.dataMap = generateDataMap(f2025, valueToGraph(), graph.subjects)
+            }
             graph.maxValue = getMaxValue(graph.dataMap, graph.sortedKeys)
         }
         updateMaxValues()

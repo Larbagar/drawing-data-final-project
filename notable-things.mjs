@@ -1,5 +1,4 @@
 import {f2025} from "./2025-26-fall-data.mjs"
-import {dataTypes} from "./day-graph.mjs";
 
 function setUpNotableThings() {
 
@@ -9,6 +8,7 @@ function setUpNotableThings() {
     for (const subject of dataset) {
         let subjectEnrollment = 0
         let subjectInstructionTime = 0
+        let sumAvgTime = 0
         for (const course of subject.courses) {
             for (const section of course.classes) {
                 const
@@ -32,21 +32,23 @@ function setUpNotableThings() {
                         // )
                     subjectEnrollment += days * enrollment * (endTime - startTime)
                     subjectInstructionTime += days * (endTime - startTime)
+                    sumAvgTime += days * (endTime - startTime) * (endTime + startTime) / 2
                 }
             }
         }
-        rows.push([subject.name, subject.courses.length, subjectInstructionTime, subjectEnrollment, subjectEnrollment / subjectInstructionTime])
+        rows.push([subject.name, subject.courses.length, subjectInstructionTime, subjectEnrollment, subjectEnrollment / subjectInstructionTime, 24 * sumAvgTime / subjectInstructionTime])
     }
     const totCount = rows.reduce((sum, data) => sum + data[1], 0)
     const totInstructionTime = rows.reduce((sum, data) => sum + data[2], 0)
     const totEnrollment = rows.reduce((sum, data) => sum + data[3], 0)
-    rows.push(["Total", totEnrollment, totInstructionTime, totEnrollment, totEnrollment / totInstructionTime])
+    const sumAvgTime = rows.reduce((sum, data) => sum + data[4] * data[2]) / totInstructionTime
+    rows.push(["Total", totEnrollment, totInstructionTime, totEnrollment, totEnrollment / totInstructionTime, sumAvgTime])
 
     function sortBy(n){
 
         rows.sort((a, b) => {
             if(typeof a[n] == "string"){
-                return b[n] < a[n] ? -1 : 1
+                return b[n] > a[n] ? -1 : 1
             }
             if(typeof a[n] == "number"){
                 return b[n] - a[n]
@@ -73,7 +75,7 @@ function setUpNotableThings() {
                 }else{
                     text = datum.toFixed(2)
                     if(isNaN(datum)){
-                        text = ""
+                        text = "n/a"
                     }
                 }
                 td.append(document.createTextNode(text))
@@ -96,8 +98,11 @@ function setUpNotableThings() {
     }
 
 
-    document.getElementById("efficiency").onclick = () => {
+    document.getElementById("efficiency-header").onclick = () => {
         sortBy(4)
+    }
+    document.getElementById("avg-time-header").onclick = () => {
+        sortBy(5)
     }
 
     document.getElementById("course-count-header").onclick = () => {

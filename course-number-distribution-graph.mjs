@@ -40,7 +40,9 @@ function setUpCourseNumberDistributionGraph(){
     for(const [code, count] of courseNumberMap){
         maxCount = Math.max(maxCount, count)
     }
-    console.log(minCode)
+
+
+    console.log(Array.from(courseNumberMap).sort((a, b) => a[1] - b[1]))
 
 
     const
